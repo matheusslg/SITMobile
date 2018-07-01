@@ -1,6 +1,6 @@
 {
   "name": "sit",
-  "app_id": "",
+  "app_id": "8b157f70",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}
