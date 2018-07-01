@@ -1,18 +1,33 @@
-<ion-header>
+<ion-header class="header-default">
   <ion-navbar>
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>Home</ion-title>
+    <ion-title>SIT</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <h3>Ionic Menu Starter</h3>
+<ion-content class="content-default">
 
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
+  <div class="margin-top-20 logo">
+  </div>
 
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+  <ion-searchbar #inputSearch class="margin-top-20" (ionInput)="filterItems($event)" placeholder="Para onde você quer ir?"
+    full></ion-searchbar>
+  <div class="padding-10" *ngIf="inputSearch.value !== '' && items?.length !== 0">
+    <span>Clique na opção desejada:</span>
+  </div>
+  <div class="padding-10 text-center" *ngIf="inputSearch.value !== '' && items?.length === 0">
+    <span>Nenhum resultado para a busca, tente outro termo!</span>
+  </div>
+  <ion-list *ngIf="inputSearch.value !== ''">
+    <ion-item *ngFor="let parada of items" (click)="openMap(parada.id)">
+      {{ parada.nome }}
+    </ion-item>
+  </ion-list>
+
+  <div class="padding-10 text-center" *ngIf="inputSearch.value === ''">
+    <span class="help-text">Digite o seu destino no campo acima para ver resultados.</span>
+  </div>
+
 </ion-content>
