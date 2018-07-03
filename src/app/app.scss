@@ -18,47 +18,8 @@
 $sitBlueLight: #2b55a1;
 $sitBlueDark: #224583;
 $sitGreen: #79c92a;
+$sitGreenDarker: #61a221;
 $sitWhite: #f4f4f4;
-
-.toolbar {
-    &-background-ios {
-        background: $sitBlueLight;
-    }
-    &-title-ios {
-        color: $sitWhite;
-    }
-    &-background-md {
-        background: $sitBlueLight;
-    }
-    &-title-md {
-        color: $sitWhite;
-    }
-}
-
-.button-inner {
-    color: $sitWhite;
-}
-
-.logo {
-    content: '';
-    width: 200px;
-    height: 90px;
-    background: url('../../assets/imgs/logo.png');
-    margin: 0 auto;
-}
-
-.content-default {
-    background-color: $sitBlueDark;
-    color: $sitWhite;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.help-text {
-    font-size: 12px;
-}
 
 .padding {
     &-5 { padding: 5px };
@@ -104,4 +65,77 @@ $sitWhite: #f4f4f4;
     &-bottom-30 { margin-bottom: 30px };
     &-bottom-40 { margin-bottom: 40px };
     &-bottom-50 { margin-bottom: 50px };
+}
+
+.toolbar {
+    &-background-ios {
+        background: $sitBlueLight;
+    }
+    &-title-ios {
+        color: $sitWhite;
+    }
+    &-background-md {
+        background: $sitBlueLight;
+    }
+    &-title-md {
+        color: $sitWhite;
+    }
+}
+
+.button-inner {
+    color: $sitWhite;
+}
+
+.logo {
+    content: '';
+    width: 200px;
+    height: 90px;
+    background: url('../../assets/imgs/logo.png');
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.content-default {
+    background-color: $sitBlueDark;
+    color: $sitWhite;
+    .card-content {
+        color: black;
+    }
+}
+
+.card-header {
+    font-weight: 700;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.help-text {
+    font-size: 14px;
+}
+
+.info-window {
+    h1,h2,h3,h4,h5,h6 {
+        margin: none;
+        color: $sitBlueDark;
+    }
+    &-legend {
+        vertical-align: middle;
+        display: inline-block;
+    }
+    &-text {
+        font-size: 15px;
+    }
+    &-image {
+        width: 30px;
+        display: inline-block;
+        text-align: center;
+    }
+    &-item {
+        display: inline-block;
+        position: relative;
+        transform: translateY(-40%);
+        padding-left: 5px;
+    }
 }

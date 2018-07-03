@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Map</ion-title>
+    <ion-title>Escolha uma opção</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -16,5 +16,8 @@
 <ion-content>
 
   <div #map id="map"></div>
+  <div class="map-button-div">
+      <button class="map-button" ion-button round color="secondary" (click)="filterAction()" [disabled]="stopDestination === ''">BUSCAR ÔNIBUS</button>
+  </div>
 
 </ion-content>

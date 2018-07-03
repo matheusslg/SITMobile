@@ -15,14 +15,17 @@ export class HomePage {
 
   searchQuery: string = '';
   items: Parada[];
+  showStops: boolean;
 
   constructor(
     public navCtrl: NavController,
     public mainProvider: MainProvider
-  ) { }
+  ) {
+    this.paradas = [];
+    this.showStops = false;
+  }
 
   ionViewDidEnter() {
-    this.paradas = [];
     this.getAllParadas();
     this.initializeItemsFilter();
   }
@@ -42,17 +45,25 @@ export class HomePage {
     }
   }
 
-  openMap(_paradaId: any) {
+  openMap() {
     this.navCtrl.push('MapPage', {
-      paradaId: _paradaId
+      paradas: this.paradas
     });
   }
 
   getAllParadas() {
-    this.mainProvider.getListParadas().then(res => {
+    this.mainProvider.getListParadas().subscribe(res => {
       this.paradasJson = res;
-      this.paradasJson.forEach(parada => {
-        this.paradas.push(new Parada(parada.id, parada.nome, parada.localizacao, parada.coordenadas, parada.idCidade, parada.sendo_usada));
+      let parada: any = {};
+      this.paradasJson.forEach(_parada => {
+        parada = new Parada();
+        parada.id = _parada.id;
+        parada.coordenadas = _parada.coordenadas;
+        parada.idCidade = _parada.idCidade;
+        parada.localizacao = _parada.localizacao;
+        parada.nome = _parada.nome;
+        parada.sendo_usada = _parada.sendo_usada;
+        this.paradas.push(parada);
       });
     })
   }

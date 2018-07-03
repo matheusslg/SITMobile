@@ -1,5 +1,6 @@
-import { Http } from '@angular/http';
+import { Http, RequestOptions, Headers } from '@angular/http';
 import { Injectable } from '@angular/core';
+import 'rxjs/add/operator/map';
 
 /*
   Generated class for the MainProvider provider.
@@ -10,23 +11,34 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class MainProvider {
 
-  private API_URL = 'http://kraft.ads.cnecsan.edu.br/~matheuscavallini/busroute/adm/api/'
-
   constructor(
-    public http: Http
+    public _http: Http,
   ) { }
 
+  public request(_url) {
+    // let headers = new Headers();
+    // headers.append('Content-Type', 'application/json');
+    // headers.append('Access-Control-Allow-Origin', '*');
+    // let options = new RequestOptions({ headers: headers });
+    return this._http.get(_url).map(res => res.json())
+  }
+
+  public post(_url, _data) {
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Access-Control-Allow-Origin', '*');
+    let options = new RequestOptions({ headers: headers });
+    return this._http.post(_url, JSON.stringify(_data), options).map(res => res.json())
+  }
+
   public getListParadas() {
-    return new Promise((resolve, reject) => {
-      let url = this.API_URL + 'paradas.php';
-      this.http.get(url)
-        .subscribe((result: any) => {
-          resolve(result.json());
-        },
-          (error) => {
-            reject(error.json());
-          });
-    });
+    let url = 'http://kraft.ads.cnecsan.edu.br/~matheuscavallini/busroute/adm/api/paradas.php';
+    return this.request(url);
+  }
+
+  public getResultado(_data) {
+    let url = 'http://kraft.ads.cnecsan.edu.br/~matheuscavallini/SITMobile/v2/actions/resultado.php';
+    return this.post(url, _data);
   }
 
 }
