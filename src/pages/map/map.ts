@@ -32,6 +32,7 @@ export class MapPage {
   radiusLimit: any;
   userMarker: any;
   possibleStopsVerified: any;
+  resultApi: any
 
   constructor(
     public navCtrl: NavController,
@@ -46,8 +47,8 @@ export class MapPage {
     this.circles = [];
     this.possibleStops = [];
     this.possibleStopsVerified = [];
-    this.radiusDefaultValue = 50;
-    this.radiusLimit = 250;
+    this.radiusDefaultValue = 400;
+    // this.radiusLimit = 250;
     this.radius = this.radiusDefaultValue;
     this.stopDestination = '';
   }
@@ -63,7 +64,9 @@ export class MapPage {
   ionViewDidLoad() {
     this.geolocation.getCurrentPosition()
       .then((resp) => {
-        const position = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+        var position = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+        // var positionFake = { lat: -28.300339, lng: -54.267294 };
+        // var position = positionFake;
 
         const mapOptions = {
           zoom: 18,
@@ -75,8 +78,8 @@ export class MapPage {
 
         let userWindow = new google.maps.InfoWindow(), userMarker;
 
-        let userIcon = "../../assets/imgs/user-icon.png";
-        let paradaIcon = "../../assets/imgs/bus-icon.png";
+        let userIcon = "assets/imgs/user-icon.png";
+        let paradaIcon = "assets/imgs/bus-icon.png";
 
         userMarker = new google.maps.Marker({
           position: position,
@@ -117,12 +120,6 @@ export class MapPage {
         userWindowContent += '</div>';
 
         //userWindowContent += '<img class="info-window info-window-image" src="' + paradaIcon + '" height="25" /><span class="info-window info-window-text">Parada</span>';
-
-        userWindow.setContent(userWindowContent);
-        userWindow.open(this.map, userMarker);
-        setTimeout(() => {
-          userWindow.close();
-        }, 15000);
 
         this.paradas.forEach(parada => {
           let coordenadasParada = parada.coordenadas.split(',');
@@ -191,9 +188,20 @@ export class MapPage {
 
         });
 
+        if (this.navParams.get('destino')) {
+          this.stopDestination = this.navParams.get('destino');
+          this.presentToast('Destino escolhido!', 5000);
+          this.filterAction();
+        } else {
+          userWindow.setContent(userWindowContent);
+          userWindow.open(this.map, userMarker);
+          setTimeout(() => {
+            userWindow.close();
+          }, 15000);
+        }
+
       }).catch((error) => {
         this.presentToast('Erro! ' + error.message, 10000);
-        console.log('Erro ao tentar recuperar sua posição atual: ', error);
       });
   }
 
@@ -210,10 +218,10 @@ export class MapPage {
       this.possibleStops = [];
     }
 
-    while (!this.searchForNearestStops() && this.radius <= this.radiusLimit) {
-      this.searchForNearestStops();
-      this.radius += 25;
-    }
+    // while (!this.searchForNearestStops() && this.radius <= this.radiusLimit) {
+    this.searchForNearestStops();
+    //   this.radius += 25;
+    // }
 
   }
 
@@ -236,31 +244,52 @@ export class MapPage {
         if (_marker.paradaId !== this.stopDestination) {
           // let aux = this.possibleStops;
           this.possibleStops.push(_marker.paradaId);
-          if (this.possibleStops.length > 0) {
-            // console.log('entrou aqui', this.possibleStops);
-            // this.possibleStopsVerified = this.possibleStops.filter(val => !aux.includes(val));
-            this.possibleStopsVerified = _.uniq(this.possibleStops);
-            // console.log('final', this.possibleStopsVerified);
-          }
+          //if (this.possibleStops.length > 0) {
+          // console.log('entrou aqui', this.possibleStops);
+          // this.possibleStopsVerified = this.possibleStops.filter(val => !aux.includes(val));
+          //this.possibleStopsVerified = _.uniq(this.possibleStops);
+          // console.log('final', this.possibleStopsVerified);
+          //}
         }
       }
     });
 
-    if (this.possibleStopsVerified.length === 0) {
+    if (this.possibleStops.length === 0) {
+      this.presentToast('Não há nenhuma parada próxima de você.', 10000);
       return false;
     } else {
       var postData = {
-        "idsI": this.possibleStopsVerified,
+        "idsI": this.possibleStops,
         "idF": this.stopDestination
       };
-      // console.log('OLHA A MERDA', JSON.parse(JSON.stringify(postData)));
+      console.log('postData', postData);
       this.mainProvider.getResultado(postData).subscribe(res => {
-        if (res.sucesso == true) {
+        this.resultApi = res;
+        if (res.status == true) {
           console.log(res);
           this.map.fitBounds(this.bounds);
-          this.map.setZoom(17);
+          this.map.setZoom(16);
+
+          var resultCoordinates = [];
+          this.resultApi.cronograma.forEach(coordenadas => {
+            let cord = coordenadas.split(',');
+            resultCoordinates.push({ lat: Number(cord[0]), lng: Number(cord[1]) });
+          });
+
+          var result = new google.maps.Polyline({
+            path: resultCoordinates,
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+          });
+
+          result.setMap(this.map);
+
+          this.presentToast('Oba! Achamos um ônibus compatível para você.', 5000);
           return true;
         } else {
+          this.presentToast('Oops! Nenhum resultado encontrado.', 5000);
           console.log(res);
           return false;
         }

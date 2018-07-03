@@ -38,7 +38,7 @@
     </ion-card-content>
   </ion-card>
   <ion-list *ngIf="inputSearch.value !== '' || showStops">
-    <ion-item *ngFor="let parada of items">
+    <ion-item *ngFor="let parada of items" (click)="openMapWithDestiny(parada.id)">
       {{ parada.nome }}
     </ion-item>
   </ion-list>

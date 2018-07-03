@@ -51,6 +51,13 @@ export class HomePage {
     });
   }
 
+  openMapWithDestiny(_destino: any) {
+    this.navCtrl.push('MapPage', {
+      destino: _destino,
+      paradas: this.paradas
+    });
+  }
+
   getAllParadas() {
     this.mainProvider.getListParadas().subscribe(res => {
       this.paradasJson = res;
